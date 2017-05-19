@@ -1,0 +1,17 @@
+_NCrunch_TicTacToe/
+packages/
+Properties/
+bin/
+obj/
+
+*.Tests/
+*.sln
+*.ncrunchsolution
+*.ncrunchproject
+*.user
+*.config
+*.suo
+*.csproj
+*.exe
+*.pdb
+*.tmp

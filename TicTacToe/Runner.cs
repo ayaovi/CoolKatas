@@ -15,7 +15,7 @@ namespace TicTacToe
         new Gamer {Indicator = Field.O, Name = "AI 2", GameState = state, Oponent = Field.X}
       };
 
-      var currentPlayer = 0;
+      var currentPlayer = new Random().Next(2);
       var message = $"{ais[currentPlayer].Name} turn: ";
 
       while (!TicTacToe.IsWin(state) && !TicTacToe.IsFull(state))
@@ -23,7 +23,8 @@ namespace TicTacToe
         Console.Clear();
         DisplayBoard(state);
         Console.Write(message);
-        
+
+        ais[currentPlayer].History.Add(new Play());
         var move = ais[currentPlayer].MakeMove();
         Console.WriteLine(move);
         Console.ReadLine();
@@ -31,6 +32,7 @@ namespace TicTacToe
         try
         {
           state = TicTacToe.Play(state, move, ais[currentPlayer].Indicator);
+          ais[currentPlayer].History
           ais[0].GameState = state;
           ais[1].GameState = state;
 

@@ -4,6 +4,7 @@ Properties/
 bin/
 obj/
 
+*.Tests/
 *.sln
 *.ncrunchsolution
 *.ncrunchproject

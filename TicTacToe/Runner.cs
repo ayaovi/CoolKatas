@@ -7,63 +7,84 @@ namespace TicTacToe
   {
     private static void Main()
     {
-      var state = new State();
 
       var ais = new[]
       {
-        new Gamer {Indicator = Field.X, Name = "AI 1", GameState = state, Oponent = Field.O},
-        new Gamer {Indicator = Field.O, Name = "AI 2", GameState = state, Oponent = Field.X}
+        new Gamer {Indicator = Field.X, Name = "AI 1", Oponent = Field.O},
+        new Gamer {Indicator = Field.O, Name = "AI 2", Oponent = Field.X}
       };
 
-      var currentPlayer = new Random().Next(2);
-      var message = $"{ais[currentPlayer].Name} turn: ";
+      var i = 0;
 
-      while (!TicTacToe.IsWin(state) && !TicTacToe.IsFull(state))
+      while (i < 10)
       {
-        Console.Clear();
-        DisplayBoard(state);
-        Console.Write(message);
+        ais[0].History.Add(new Play());
+        ais[1].History.Add(new Play());
+        var state = new State();
+        var currentPlayer = new Random().Next(2);
+        var message = $"{ais[currentPlayer].Name} turn: ";
 
-        ais[currentPlayer].History.Add(new Play());
-        var move = ais[currentPlayer].MakeMove();
-        Console.WriteLine(move);
-        Console.ReadLine();
-
-        try
+        while (!TicTacToe.IsWin(state) && !TicTacToe.IsFull(state))
         {
-          state = TicTacToe.Play(state, move, ais[currentPlayer].Indicator);
-          ais[currentPlayer].History
+          Console.Clear();
+          DisplayBoard(state);
+          Console.Write(message);
+
           ais[0].GameState = state;
           ais[1].GameState = state;
+          var move = ais[currentPlayer].MakeMove();
+          Console.WriteLine(move);
+          Console.ReadLine();
 
-          currentPlayer = currentPlayer == 0 ? 1 : 0;
-          message = $"{ais[currentPlayer].Name} Turn: ";
+          try
+          {
+            state = TicTacToe.Play(state, move, ais[currentPlayer].Indicator);
+            ais[currentPlayer].History[ais[currentPlayer].History.Count - 1]
+                              .Turns.Add(new Turn{ GameState = ais[currentPlayer].GameState, Move = move });
+
+            currentPlayer = currentPlayer == 0 ? 1 : 0;
+            message = $"{ais[currentPlayer].Name} Turn: ";
+          }
+          catch (Exception e)
+          {
+            if (e.Message == "Invalid Move")
+            {
+              message = "Invalid Move, Please try again: ";
+              continue;
+            }
+            if (e.Message == "Move Already Made")
+            {
+              message = $"Cell {move} is not empty, Please choose another: ";
+            }
+          }
         }
-        catch (Exception e)
+
+        Console.Clear();
+        DisplayBoard(state);
+
+        if (!TicTacToe.IsFull(state))
         {
-          if (e.Message == "Invalid Move")
+          if (currentPlayer == 0)
           {
-            message = "Invalid Move, Please try again: ";
-            continue;
+            ais[0].History[ais[0].History.Count - 1].Outcome = -1;
+            ais[1].History[ais[1].History.Count - 1].Outcome = 1;
           }
-          if (e.Message == "Move Already Made")
+          else
           {
-            message = $"Cell {move} is not empty, Please choose another: ";
+            ais[0].History[ais[0].History.Count - 1].Outcome = 1;
+            ais[1].History[ais[1].History.Count - 1].Outcome = -1;
           }
+          Console.WriteLine(currentPlayer == 0 ? "AI 2 Won." : "AI 1 Won.");
+          Console.ReadLine();
+        }
+        else
+        {
+          ais[0].History[ais[0].History.Count - 1].Outcome = 0;
+          Console.WriteLine("It is a Tie");
+          Console.ReadLine();
         }
       }
-
-      Console.Clear();
-      DisplayBoard(state);
-
-      if (!TicTacToe.IsFull(state))
-      {
-        Console.WriteLine(currentPlayer == 0 ? "AI 2 Won." : "AI 1 Won.");
-      }
-      else
-      {
-        Console.WriteLine("It is a Tie");
-      }
+      ++i;
     }
 
     private static void DisplayBoard(State state)

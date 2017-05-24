@@ -14,14 +14,13 @@ namespace TicTacToe
 
     public int SelectOptimalMove()
     {
-      var historicalMoves = History.Where(play => play.Outcome == 1 && play.Has(GameState));
+      var historicalMoves = History.Where(play => play.Outcome == 1 && play.Has(GameState)).ToList();
 
-      if (historicalMoves.Count() != 0)
+      if (historicalMoves.Count > 0)
       {
         Console.WriteLine();
-        Console.WriteLine($"Found {historicalMoves.Count()} historical moves.");
-        return historicalMoves.First().Turns
-                              .Find(turn => turn.GameState.Equals(GameState)).Move;
+        Console.WriteLine($"Found {historicalMoves.Count} historical moves.");
+        return historicalMoves[0].Turns.Find(turn => turn.GameState.Equals(GameState)).Move;
       }
 
       var opponentWinningPaths = TicTacToe.GetWinningPaths(GameState, Oponent);
@@ -43,6 +42,6 @@ namespace TicTacToe
       return moves[new Random().Next(moves.Count)];
     } 
 
-    public int MakeMove() => TicTacToe.IsEmpty(GameState) ? new Random().Next(9) : SelectOptimalMove();
+    public int MakeMove() => SelectOptimalMove();
   }
 }

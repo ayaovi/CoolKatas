@@ -16,7 +16,7 @@ namespace TicTacToe
 
       var i = 0;
 
-      while (i < 10)
+      while (true)
       {
         ais[0].History.Add(new Play());
         ais[1].History.Add(new Play());
@@ -66,7 +66,6 @@ namespace TicTacToe
         {
           if (currentPlayer == 0)
           {
-            // ais[0].History[ais[0].History.Count - 1].Outcome = -1;
             ais[0].History.RemoveAt(ais[0].History.Count - 1);
             ais[1].History[ais[1].History.Count - 1].Outcome = 1;
           }
@@ -74,21 +73,19 @@ namespace TicTacToe
           {
             ais[0].History[ais[0].History.Count - 1].Outcome = 1;
             ais[1].History.RemoveAt(ais[1].History.Count - 1);
-            // ais[1].History[ais[1].History.Count - 1].Outcome = -1;
           }
           Console.WriteLine(currentPlayer == 0 ? "AI 2 Won." : "AI 1 Won.");
         }
         else
         {
-          // ais[0].History[ais[0].History.Count - 1].Outcome = 0;
           Console.WriteLine("It is a Tie");
         }
 
         // Console.WriteLine($"{ais[0].Name} has {ais[0].History.Count} history data.");
         // Console.WriteLine($"{ais[1].Name} has {ais[1].History.Count} history data.");
         Console.ReadLine();
+        ++i;
       }
-      ++i;
     }
 
     private static void DisplayBoard(State state)
